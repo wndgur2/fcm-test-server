@@ -9,7 +9,9 @@ const PORT = 8080
 
 // FCM
 
-const registrationTokens = []
+const registrationTokens = [
+  'fxe6SCaqjfUqXq1EOjkcLA:APA91bHqpdZXF_LuOs7uKJSXvDzh2ZULOrs9486urUFG85PPQAmllsayB6ypwTDhM9nu61HnG6h2-TcKMyn2jCXoMDVBDeUnTqE9afVmVgfjc1FkbNSLqI4',
+]
 
 const { initializeApp } = require('firebase-admin/app')
 const { getMessaging } = require('firebase-admin/messaging')
