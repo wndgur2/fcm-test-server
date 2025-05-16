@@ -10,7 +10,7 @@ const PORT = 8080
 // FCM
 
 const registrationTokens = [
-  'fxe6SCaqjfUqXq1EOjkcLA:APA91bHqpdZXF_LuOs7uKJSXvDzh2ZULOrs9486urUFG85PPQAmllsayB6ypwTDhM9nu61HnG6h2-TcKMyn2jCXoMDVBDeUnTqE9afVmVgfjc1FkbNSLqI4',
+  'fzVVkxDs6n2OKhKoeapQVk:APA91bHb-uBQxRcjg2LmxnF6QBvUnx_V1Vq1_-G5JOQisgnKHcO84W6YTky5DomWSREqtBSfmx3GPQwE3JKnkvSdQLJfQPD4S_h2iSa-m427ckQbHNpoc94',
 ]
 
 const { initializeApp } = require('firebase-admin/app')
@@ -60,7 +60,9 @@ app.post('/fcm/broadcast', (req, res) => {
     data: {
       title: 'test message',
       score: '850',
-      time: '2:45',
+      time: '317',
+      alertTitle: '장수말벌 출몰',
+      alertBody: '2번 벌통에 3시 20분에 장수말벌이 출몰했어요!',
     },
     tokens: registrationTokens,
   }
@@ -68,8 +70,24 @@ app.post('/fcm/broadcast', (req, res) => {
   getMessaging()
     .sendEachForMulticast(message)
     .then((response) => {
-      console.log('Successfully sent message:', response)
+      console.log('sent message:', response)
+      if (response.failureCount > 0) {
+        const failedTokens = []
+        response.responses.forEach((resp, idx) => {
+          if (!resp.success) {
+            failedTokens.push(registrationTokens[idx])
+          }
+          if (resp.error) {
+            console.log('Error sending message to token:', registrationTokens[idx], resp.error)
+          }
+        })
+        console.log('List of tokens that caused failures: ' + failedTokens)
+      }
       return res.status(200).send('ok')
+    })
+    .catch((error) => {
+      console.log('Error sending message:', error)
+      return res.status(500).send('error')
     })
 })
 
